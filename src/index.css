@@ -1,0 +1,47 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Indie+Flower&display=swap&family=Pacifico&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: "Barlow", sans-serif;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  background-color: #ffefd5;
+}
+h2 {
+  font-family: "Indie Flower", cursive;
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000,
+    2px 2px 0 #000;
+}
+h3 {
+  font-family: "Barlow", sans-serif;
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000,
+    2px 2px 0 #000;
+}
+.container {
+  width: 86%;
+  margin-inline: auto;
+}
+.Pacific {
+  font-family: "Pacific", cursive;
+}
+.bg-purple{
+  background-color: #552cb8;
+
+}
+.purple{
+  color: #552cb8;
+}
+.text-shadow-custom{
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000,
+    2px 2px 0 #000;
+}
+.shadow-custom {
+  box-shadow: 5px 5px 0 0 #000;
+}
