@@ -31,17 +31,20 @@ h3 {
 .Pacific {
   font-family: "Pacific", cursive;
 }
-.bg-purple{
+.bg-purple {
   background-color: #552cb8;
-
 }
-.purple{
+.purple {
   color: #552cb8;
 }
-.text-shadow-custom{
+.text-shadow-custom {
   text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000,
     2px 2px 0 #000;
 }
-.shadow-custom {
-  box-shadow: 5px 5px 0 0 #000;
+.transition-transform {
+  transition: transform 0.3s ease;
+}
+
+.transition-opacity {
+  transition: opacity 0.3s ease;
 }

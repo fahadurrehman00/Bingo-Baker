@@ -3,9 +3,15 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
-      backgroundImage: {
-        "card-bg": "url('/images/cardbg.png')",
+      boxShadow: {
+        custom: "5px 5px 0 0 #000", 
+        "hover-custom": "-5px -5px 0 0 #000", 
       },
+    },
+  },
+  variants: {
+    extend: {
+      boxShadow: ["hover"],
     },
   },
   plugins: [],
