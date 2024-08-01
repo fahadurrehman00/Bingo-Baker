@@ -1,7 +1,17 @@
 import React, { useState, useRef } from "react";
-import FloatingTextEditor from "./FloatingTextEditor";
+import { useSelector } from "react-redux";
+import FloatingTextEditor from "../../comman/FloatingTextEditor/FloatingTextEditor";
 
 const CreateBingoCard = () => {
+  const backgroundImage = useSelector(
+    (state) => state.background.backgroundImage
+  );
+  const backgroundColor = useSelector(
+    (state) => state.background.backgroundColor
+  );
+  const gridColor = useSelector((state) => state.background.gridColor);
+  const gridBorder = useSelector((state) => state.background.gridBorder);
+  const textColor = useSelector((state) => state.background.textColor);
   const [size, setSize] = useState(5);
   const [title, setTitle] = useState("Craft Ideas");
   const [inputs, setInputs] = useState(
@@ -48,7 +58,7 @@ const CreateBingoCard = () => {
       const inputRect = event.target.getBoundingClientRect();
 
       setEditorPosition({
-        top: (inputRect.top - parentRect.top)+0,
+        top: inputRect.top - parentRect.top + 0,
         left: 0,
       });
 
@@ -78,9 +88,9 @@ const CreateBingoCard = () => {
 
   const renderInputs = () => {
     return inputs.map((input, index) => (
-      <div key={index} className="relative h-[250px] ">
+      <div key={index} className="relative h-[250px]">
         <textarea
-          className="border border-red-400 p-2 text-center w-full h-full resize-none overflow-hidden"
+          className="border p-2 text-center w-full h-full resize-none overflow-hidden bg-cover bg-center"
           value={input.text}
           onChange={(e) => handleInputChange(index, e.target.value)}
           onClick={(e) => handleInputClick(index, e)}
@@ -89,6 +99,8 @@ const CreateBingoCard = () => {
             backgroundColor: input.color,
             backgroundImage: input.image ? `url(${input.image})` : "none",
             backgroundSize: "cover",
+            backgroundPosition: "center",
+            background: "transparent",
             textShadow: input.textOutline
               ? `-1px -1px  ${input.textOutline}, 1px -1px  ${input.textOutline}, -1px 1px  ${input.textOutline}, 1px 1px  ${input.textOutline}`
               : "none",
@@ -96,28 +108,60 @@ const CreateBingoCard = () => {
             textAlign: "center",
             paddingTop: "calc(40% - 0.5em)",
             lineHeight: "1.5em",
+            borderColor: gridColor,
+            borderWidth: gridBorder,
           }}
         />
       </div>
     ));
   };
 
+  const renderBingoLetters = () => {
+    const bingoLetters = "BINGOOO";
+    return bingoLetters
+      .slice(0, size)
+      .split("")
+      .map((letter, index) => (
+        <div key={index}>
+          <input
+            type="text"
+            style={{
+              width: "8rem",
+              fontWeight: "bold",
+              textAlign: "center",
+              fontSize: "4rem",
+              background: "transparent",
+            }}
+            value={letter}
+          />
+        </div>
+      ));
+  };
+
   return (
     <div
       className="parent-div rounded-[58px] p-2 mx-6 bg-white relative bg-card-bg bg-cover"
-      ref={parentDivRef} 
+      ref={parentDivRef}
+      style={{
+        backgroundColor: backgroundColor,
+        backgroundImage: backgroundImage ? `url(${backgroundImage})` : "none",
+        color: textColor,
+      }}
     >
       <div className="flex flex-col items-center w-4/5 mx-auto py-4">
         <div className="cardTitle flex gap-6 items-center mb-4">
           <input
-            className="border border-red-400 text-red-400  rounded-xl text-7xl p-2 text-center Pacific"
+            className="border border-red-400 rounded-xl text-7xl p-2 text-center Pacific"
             type="text"
             value={title}
             onChange={handleTitleChange}
-            style={{ width: `${title.length + 1}ch` }}
+            style={{
+              width: `${title.length}ch`,
+              background: "transparent",
+            }}
           />
           <select
-            className="border border-red-400 rounded-xl text-red-400 px-5 py-2"
+            className="border border-red-400 rounded-xl px-5 py-2 bg-transparent"
             name="size"
             id="id_size"
             value={size}
@@ -130,13 +174,15 @@ const CreateBingoCard = () => {
             <option value="3">3x3</option>
           </select>
         </div>
-        <div className="text-center py-4 text-red-400">
-          <h4 className="text-7xl tracking-[4rem]"> B I N G O</h4>
+        <div className="text-center py-4 flex justify-around w-full">
+          {renderBingoLetters()}
         </div>
         <div
-          className="grid border border-red-400 "
+          className="grid"
           style={{
             gridTemplateColumns: `repeat(${size}, 1fr)`,
+            borderColor: gridColor,
+            borderWidth: gridBorder,
           }}
         >
           {renderInputs()}
@@ -148,7 +194,7 @@ const CreateBingoCard = () => {
               style={{
                 top: editorPosition.top,
                 left: editorPosition.left,
-                position: "absolute", 
+                position: "absolute",
               }}
             />
           )}

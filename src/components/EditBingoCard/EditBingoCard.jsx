@@ -1,10 +1,16 @@
-import React, { useState, useRef } from "react";
-import FloatingTextEditor from "../CreateBingo/CreateBingCard/FloatingTextEditor";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import {
+  setBackgroundImage,
+  setBackgroundColor,
+  setGridColor,
+  setGridBorder,
+  setTextColor,
+} from "../../store/Slices/BackgroundSlice";
 
 const EditBingoCard = () => {
-  const [size, setSize] = useState(3);
   const [inputs, setInputs] = useState(
-    Array(size).fill({
+    Array(3).fill({
       text: "",
       color: "",
       image: "",
@@ -12,25 +18,11 @@ const EditBingoCard = () => {
       textOutline: "",
     })
   );
-  const [editorVisible, setEditorVisible] = useState(false);
-  const [editorPosition, setEditorPosition] = useState({ top: 0, left: 0 });
-  const [currentInputIndex, setCurrentInputIndex] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null); // Add state for image preview
-  const parentDivRef = useRef(null);
-
-  const handleSizeChange = (e) => {
-    const newSize = Number(e.target.value);
-    setSize(newSize);
-    setInputs(
-      Array(newSize).fill({
-        text: "",
-        color: "",
-        image: "",
-        textColor: "",
-        textOutline: "",
-      })
-    );
-  };
+  const [imagePreview, setImagePreview] = useState(null);
+  const [chosenColor, setChosenColor] = useState("#ffffff");
+  const [chosenTextColor, setChosenTextColor] = useState("#ffff");
+  const [chosenGridColor, setChosenGridColor] = useState("#ffff");
+  const dispatch = useDispatch();
 
   const handleInputChange = (index, value) => {
     const newInputs = [...inputs];
@@ -38,55 +30,43 @@ const EditBingoCard = () => {
     setInputs(newInputs);
   };
 
-  const handleInputClick = (index, event) => {
-    if (parentDivRef.current) {
-      const parentRect = parentDivRef.current.getBoundingClientRect();
-      const inputRect = event.target.getBoundingClientRect();
-
-      setEditorPosition({
-        top: inputRect.top - parentRect.top,
-        left: inputRect.left - parentRect.left,
-      });
-
-      setCurrentInputIndex(index);
-      setEditorVisible(true);
-    }
-  };
-
-  const handleApplyChanges = ({
-    text,
-    image,
-    color,
-    textColor,
-    textOutline,
-  }) => {
-    const newInputs = [...inputs];
-    newInputs[currentInputIndex] = {
-      text: text || newInputs[currentInputIndex].text,
-      image,
-      color: color || newInputs[currentInputIndex].color,
-      textColor: textColor || newInputs[currentInputIndex].textColor,
-      textOutline: textOutline || newInputs[currentInputIndex].textOutline,
-    };
-    setInputs(newInputs);
-    setEditorVisible(false);
-  };
-
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        setImagePreview(reader.result); // Set the preview image
-        const newInputs = [...inputs];
-        newInputs[currentInputIndex] = {
-          ...newInputs[currentInputIndex],
-          image: reader.result,
-        };
-        setInputs(newInputs);
+        setImagePreview(reader.result);
+        dispatch(setBackgroundImage(reader.result));
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleColorChange = (e) => {
+    setChosenColor(e.target.value);
+    dispatch(setBackgroundColor(e.target.value));
+  };
+
+  const handleTextColorChange = (e) => {
+    setChosenTextColor(e.target.value);
+    dispatch(setTextColor(e.target.value));
+  };
+
+  const handleGridColorChange = (e) => {
+    setChosenGridColor(e.target.value);
+    dispatch(setGridColor(e.target.value));
+  };
+  const handleGridBorderChange = (e) => {
+    const value = e.target.value;
+    let borderWidth;
+    if (value === "1") {
+      borderWidth = "1px";
+    } else if (value === "2") {
+      borderWidth = "2px";
+    } else if (value === "3") {
+      borderWidth = "3px";
+    }
+    dispatch(setGridBorder(borderWidth));
   };
 
   const renderInputs = () => {
@@ -96,7 +76,6 @@ const EditBingoCard = () => {
           className="border border-red-400 p-2 text-center w-full h-full resize-none overflow-hidden"
           value={input.text}
           onChange={(e) => handleInputChange(index, e.target.value)}
-          onClick={(e) => handleInputClick(index, e)}
           style={{
             fontSize: `${Math.max(1, 5 - input.text.length / 3)}vw`,
             backgroundColor: input.color,
@@ -144,7 +123,7 @@ const EditBingoCard = () => {
           <div className="flex space-x-12">
             <div className="text-center">
               <div
-                className="w-40 h-40 border border-gray-300 flex items-center justify-center cursor-pointer bg-white"
+                className="w-40 h-40 flex items-center justify-center cursor-pointer bg-white"
                 style={{
                   backgroundImage: imagePreview
                     ? `url(${imagePreview})`
@@ -164,37 +143,64 @@ const EditBingoCard = () => {
               Background Image
             </div>
             <div className="text-center">
-              <div>
+              <div
+                className="w-40 h-40 flex items-center justify-center cursor-pointer"
+                style={{
+                  backgroundColor: chosenColor,
+                }}
+                onClick={() =>
+                  document.getElementById("backgroundColor").click()
+                }
+              >
                 <input
                   type="color"
                   id="backgroundColor"
-                  className="w-40 h-40"
-                  value="#ffffff"
+                  className="hidden"
+                  value={chosenColor}
+                  onChange={handleColorChange}
                 />
               </div>
-              Backgrond Color
+              Background Color
             </div>
             <div className="text-center">
-              <div>
+              <div
+                className="w-40 h-40 flex items-center justify-center cursor-pointer"
+                style={{
+                  backgroundColor: chosenTextColor,
+                }}
+                onClick={() =>
+                  document.getElementById("backgroundTextColor").click()
+                }
+              >
                 <input
                   type="color"
-                  id="textColor"
-                  className="w-40 h-40"
-                  value="#ffffff"
+                  id="backgroundTextColor"
+                  className="hidden"
+                  value={chosenTextColor}
+                  onChange={handleTextColorChange}
                 />
               </div>
               Text Color
             </div>
             <div className="text-center">
-              <div>
+              <div
+                className="w-40 h-40 flex items-center justify-center cursor-pointer"
+                style={{
+                  backgroundColor: chosenGridColor,
+                }}
+                onClick={() =>
+                  document.getElementById("backgroundGridColor").click()
+                }
+              >
                 <input
                   type="color"
-                  id="gridColor"
-                  className="w-40 h-40"
-                  value="#ffffff"
+                  id="backgroundGridColor"
+                  className="hidden"
+                  value={chosenGridColor}
+                  onChange={handleGridColorChange}
                 />
               </div>
-              Grid Lines Color
+              Grid Color
             </div>
           </div>
           <div className="text-center">
@@ -203,20 +209,17 @@ const EditBingoCard = () => {
                 name=""
                 id=""
                 className="p-2 text-lg font-medium cursor-pointer rounded-lg w-32 text-black"
-                onChange={handleSizeChange}
+                onChange={handleGridBorderChange}
               >
                 <option value="1">Thin</option>
                 <option value="2">Medium</option>
                 <option value="3">Thick</option>
               </select>
             </div>
-            Line Thikness
+            Line Thickness
           </div>
         </div>
-        <div
-          className="py-11 flex justify-center gap-12 items-center"
-          ref={parentDivRef}
-        >
+        <div className="py-11 flex justify-center gap-12 items-center">
           <div className="text-center">
             <h5 className="font-semibold text-2xl"> Extra Words & Images</h5>
             <p>(these will be mixed into your card above)</p>
@@ -225,23 +228,10 @@ const EditBingoCard = () => {
             <div
               className="grid w-min"
               style={{
-                gridTemplateColumns: `repeat(${size}, 1fr)`,
-                gridTemplateRows: "repeat(1, 1fr)",
+                gridTemplateColumns: `repeat(3, 1fr)`,
               }}
             >
               {renderInputs()}
-
-              {editorVisible && (
-                <FloatingTextEditor
-                  onApplyChanges={handleApplyChanges}
-                  onClose={() => setEditorVisible(false)}
-                  style={{
-                    top: editorPosition.top,
-                    left: editorPosition.left,
-                    position: "absolute",
-                  }}
-                />
-              )}
             </div>
             <div className="flex justify-between py-4">
               <button className="bg-blue-500 text-white px-4 py-2 rounded">
@@ -264,23 +254,12 @@ const EditBingoCard = () => {
                 id="privateOption1"
                 className="mr-3"
               />
-              <label htmlFor="privateOption1">
-                Anyone can view your card. It will be indexed in search engines
-                so other people can find and use it.
-              </label>
-            </div>
-            <div>
-              <h5 className="text-xl font-medium">Hidden</h5>
-
-              <input
-                type="radio"
-                name="privacyOption"
-                id="privateOption2"
-                className="mr-3"
-              />
-              <label htmlFor="privateOption2">
-                Only people who know the URL can access your card, and it will
-                not be indexed by search engines.
+              <label
+                htmlFor="privateOption1"
+                className="cursor-pointer leading-7"
+              >
+                Post this card in the public directory. (Public cards are shown
+                in our public directory)
               </label>
             </div>
             <div>
@@ -288,11 +267,15 @@ const EditBingoCard = () => {
               <input
                 type="radio"
                 name="privacyOption"
-                id="privateOption3"
+                id="privateOption2"
                 className="mr-3"
               />
-              <label htmlFor="privateOption3">
-                Only you can access the card.
+              <label
+                htmlFor="privateOption2"
+                className="cursor-pointer leading-7"
+              >
+                Keep this card private. (Only people with a direct link can view
+                it)
               </label>
             </div>
           </div>

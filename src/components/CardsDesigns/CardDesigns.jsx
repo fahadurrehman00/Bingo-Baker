@@ -19,7 +19,8 @@ const cardData = [
 
 const CardDesigns = () => {
   return (
-    <div className="border-2 border-black rounded-3xl bg-purple p-4 container">
+    <div className="border-2 border-black rounded-3xl bg-purple p-4 container
+    ">
       <CardHeader />
       <div className="sm:p-24 md:p-4 p-4 flex items-center justify-center flex-wrap gap-6">
         {cardData.map((card, index) => (
