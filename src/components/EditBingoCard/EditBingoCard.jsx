@@ -10,7 +10,7 @@ import {
 
 const EditBingoCard = () => {
   const [inputs, setInputs] = useState(
-    Array(5).fill({
+    Array(3).fill({
       text: "",
       color: "",
       image: "",
@@ -228,8 +228,7 @@ const EditBingoCard = () => {
             <div
               className="grid w-min"
               style={{
-                gridTemplateColumns: `repeat(5, 1fr)`,
-                gridTemplateRows: "repeat(1, 1fr)",
+                gridTemplateColumns: `repeat(3, 1fr)`,
               }}
             >
               {renderInputs()}

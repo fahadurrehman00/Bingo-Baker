@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useSelector } from "react-redux";
-import FloatingTextEditor from "./FloatingTextEditor";
+import FloatingTextEditor from "../../comman/FloatingTextEditor/FloatingTextEditor";
 
 const CreateBingoCard = () => {
   const backgroundImage = useSelector(
@@ -90,7 +90,7 @@ const CreateBingoCard = () => {
     return inputs.map((input, index) => (
       <div key={index} className="relative h-[250px]">
         <textarea
-          className="border p-2 text-center w-full h-full resize-none overflow-hidden"
+          className="border p-2 text-center w-full h-full resize-none overflow-hidden bg-cover bg-center"
           value={input.text}
           onChange={(e) => handleInputChange(index, e.target.value)}
           onClick={(e) => handleInputClick(index, e)}
@@ -99,6 +99,7 @@ const CreateBingoCard = () => {
             backgroundColor: input.color,
             backgroundImage: input.image ? `url(${input.image})` : "none",
             backgroundSize: "cover",
+            backgroundPosition: "center",
             background: "transparent",
             textShadow: input.textOutline
               ? `-1px -1px  ${input.textOutline}, 1px -1px  ${input.textOutline}, -1px 1px  ${input.textOutline}, 1px 1px  ${input.textOutline}`
@@ -142,7 +143,7 @@ const CreateBingoCard = () => {
       className="parent-div rounded-[58px] p-2 mx-6 bg-white relative bg-card-bg bg-cover"
       ref={parentDivRef}
       style={{
-        backgroundColor: backgroundImage ? backgroundColor : backgroundColor,
+        backgroundColor: backgroundColor,
         backgroundImage: backgroundImage ? `url(${backgroundImage})` : "none",
         color: textColor,
       }}
@@ -155,7 +156,7 @@ const CreateBingoCard = () => {
             value={title}
             onChange={handleTitleChange}
             style={{
-              width: `${title.length + 1}ch`,
+              width: `${title.length}ch`,
               background: "transparent",
             }}
           />

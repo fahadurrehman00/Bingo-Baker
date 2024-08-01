@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useSelector } from "react-redux";
-import FloatingTextEditor from "../../CreateBingo/CreateBingCard/FloatingTextEditor";
+import FloatingTextEditor from "../../comman/FloatingTextEditor/FloatingTextEditor";
 
 const BingoCard = () => {
   const backgroundImage = useSelector(
